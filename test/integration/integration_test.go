@@ -380,15 +380,15 @@ func TestIntegrationAzure(t *testing.T) {
 	testCommon(t)
 }
 
-func TestIntegrationSFTPAuthPassword(t *testing.T) {
-	r := require.New(t)
-	r.NoError(dockerCP("config-sftp-auth-password.yaml", "/etc/clickhouse-backup/config.yml"))
-	testCommon(t)
-}
-
 func TestIntegrationSFTPAuthKey (t *testing.T) {
 	r := require.New(t)
 	r.NoError(dockerCP("config-sftp-auth-key.yaml", "/etc/clickhouse-backup/config.yml"))
+	testCommon(t)
+}
+
+func TestIntegrationSFTPAuthPassword(t *testing.T) {
+	r := require.New(t)
+	r.NoError(dockerCP("config-sftp-auth-password.yaml", "/etc/clickhouse-backup/config.yml"))
 	testCommon(t)
 }
 
@@ -435,6 +435,7 @@ func testCommon(t *testing.T) {
 	r.NoError(dockerExec("clickhouse-backup", "create", "increment"))
 
 	log.Info("Upload")
+	r.NoError(dockerExec("clickhouse-backup", "list"))
 	r.NoError(dockerExec("clickhouse-backup", "upload", "test_backup"))
 	r.NoError(dockerExec("clickhouse-backup", "upload", "increment", "--diff-from", "test_backup"))
 
